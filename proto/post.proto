@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package post;
+
+option go_package = "./generated/post";
+
+message Messages {
+  string message = 1;
+}
+
+message FileHeader {
+  string contentType = 1;
+  string url = 2;
+  string fileId = 3;
+}
+
+message PostForm {
+  repeated FileHeader files = 1;
+  string text = 2;
+  bool allowComment = 3;
+  string privacy = 4;
+}
+
+message PostIdPayload {
+  string _id = 1;
+}
+
+service PostService {
+  rpc CreatePost(PostForm) returns (Post) {}
+  rpc DeletePost(PostIdPayload) returns (Messages) {}
+}
+
+message Media {
+  string id = 1;
+  string type = 2;
+  string url = 3;
+}
+
+message Post {
+  string _id = 1;
+  string userId = 2;
+  string text = 3;
+  repeated Media media = 4;
+  bool allowComment = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  repeated string tags = 8;
+  string privacy = 9;
+}

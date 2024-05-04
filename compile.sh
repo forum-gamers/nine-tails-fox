@@ -1,0 +1,1 @@
+protoc -I=/Users/apple/Documents/golang\ app/nine-tails-fox/proto --go_out=. /Users/apple/Documents/golang\ app/nine-tails-fox/proto/*.proto --go-grpc_out=.

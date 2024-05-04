@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package bookmark;
+
+option go_package = "./generated/bookmark";
+
+service BookmarkService {
+  rpc CreateBookmark(PostIdPayload) returns (Bookmark) {}
+  rpc DeleteBookmark(IdPayload) returns (Messages) {}
+}
+
+message Bookmark {
+  string _id = 1;
+  string postId = 2;
+  string userId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message PostIdPayload {
+  string postId = 1;
+}
+
+message IdPayload {
+  string _id = 1;
+}
+
+message Messages {
+  string message = 1;
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package reply;
+
+option go_package = "./generated/reply";
+
+service ReplyService {
+  rpc CreateReply(CommentForm) returns (Reply) {}
+  rpc DeleteReply(DeleteReplyPayload) returns (Messages) {}
+}
+
+message Reply {
+  string _id = 1;
+  string userId = 2;
+  string text = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message CommentForm {
+  string text = 1;
+  string commentId = 2;
+}
+
+message ReplyIdPayload {
+  string _id = 1;
+}
+
+message DeleteReplyPayload {
+  string commentId = 1;
+  string replyId = 2;
+}
+
+message Messages {
+  string message = 1;
+}

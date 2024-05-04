@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package like;
+
+option go_package = "./generated/like";
+
+message LikeIdPayload {
+  string postId = 1;
+}
+
+message Like {
+  string _id = 1;
+  string userId = 2;
+  string postId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message Messages {
+  string message = 1;
+}
+
+service LikeService {
+  rpc CreateLike(LikeIdPayload) returns (Like) {}
+  rpc DeleteLike(LikeIdPayload) returns (Messages) {}
+}

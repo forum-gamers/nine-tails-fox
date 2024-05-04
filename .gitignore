@@ -1,0 +1,7 @@
+.env
+
+main.exe
+
+.main
+
+generated/**/*.pb.go

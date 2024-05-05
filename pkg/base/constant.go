@@ -29,9 +29,13 @@ type BaseRepo interface {
 	Create(ctx context.Context, data any) (primitive.ObjectID, error)
 	FindOneByQuery(ctx context.Context, query any, result any) error
 	UpdateOneByQuery(ctx context.Context, id primitive.ObjectID, query any) (*mongo.UpdateResult, error)
-	FindByQuery(ctx context.Context, query any) (*mongo.Cursor, error)
-	GetSession() (mongo.Session, error)
 	UpdateOne(ctx context.Context, filter, update any) (*mongo.UpdateResult, error)
+	FindByQuery(ctx context.Context, query any) (*mongo.Cursor, error)
+	BulkUpdate(ctx context.Context, updateModel []mongo.WriteModel) (*mongo.BulkWriteResult, error)
+	Aggregations(ctx context.Context, aggregation any) (*mongo.Cursor, error)
+	GetSession() (mongo.Session, error)
+	UpdateMany(ctx context.Context, filter any, update any) (*mongo.UpdateResult, error)
+	DeleteMany(ctx context.Context, filter any) (*mongo.DeleteResult, error)
 }
 
 type BaseRepoImpl struct {

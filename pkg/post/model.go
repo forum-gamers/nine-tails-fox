@@ -23,3 +23,27 @@ type Post struct {
 	Tags         []string           `json:"tags" bson:"tags,omitempty"`
 	Privacy      string             `json:"privacy" bson:"privacy" default:"Public"`
 }
+
+type PostResponse struct {
+	Id           primitive.ObjectID `json:"_id" bson:"_id"`
+	UserId       string             `json:"userId" bson:"userId"`
+	Text         string             `json:"text" bson:"text"`
+	Media        []Media            `json:"media" bson:"media"`
+	AllowComment bool               `json:"allowComment"`
+	CreatedAt    time.Time          `json:"createdAt" bson:"createdAt"`
+	UpdatedAt    time.Time          `json:"updatedAt" bson:"updatedAt"`
+	CountLike    int                `json:"countLike" bson:"countLike"`
+	CountComment int                `json:"countComment" bson:"countComment"`
+	CountShare   int                `json:"countShare" bson:"countShare"`
+	IsLiked      bool               `json:"isLiked" bson:"isLiked"`
+	IsShared     bool               `json:"isShared" bson:"isShared"`
+	Tags         []string           `json:"tags" bson:"tags"`
+	Privacy      string             `json:"privacy" bson:"privacy"`
+	TotalData    int                `json:"totalData" bson:"totalData"`
+}
+
+type TopTags struct {
+	Id    string               `json:"_id" bson:"_id"`
+	Count int                  `json:"count" bson:"count"`
+	Posts []primitive.ObjectID `json:"posts" bson:"posts"`
+}

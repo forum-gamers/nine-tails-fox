@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 
+	"github.com/forum-gamers/nine-tails-fox/generated"
 	protobuf "github.com/forum-gamers/nine-tails-fox/generated/comment"
 	"github.com/forum-gamers/nine-tails-fox/pkg/comment"
 	"github.com/forum-gamers/nine-tails-fox/pkg/post"
@@ -75,4 +76,26 @@ func (s *CommentService) DeleteComment(ctx context.Context, req *protobuf.Commen
 	}
 
 	return &protobuf.Messages{Message: "success"}, nil
+}
+
+func (s *CommentService) FindPostComment(ctx context.Context, in *protobuf.PaginationWithPostId) (*protobuf.CommentRespWithMetadata, error) {
+	postId, err := primitive.ObjectIDFromHex(in.PostId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid objectId")
+	}
+
+	data, err := s.CommentRepo.FindPostComment(ctx, postId, struct {
+		Page  int
+		Limit int
+	}{Page: int(in.Page), Limit: int(in.Limit)})
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.CommentRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParseCommentRespToProto(data),
+	}, nil
 }

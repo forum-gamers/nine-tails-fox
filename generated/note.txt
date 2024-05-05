@@ -1,0 +1,10 @@
+directory /generated/** will be ignored when pushing to git
+compile proto/*.proto to this directory with command:
+protoc -I=${pwd}/proto --go_out=. ${pwd}/proto/*.proto --go-grpc_out=.
+             ^                       ^
+             |                       |
+           this is your current directory                       
+
+note:
+- install proto compiler (eq: brew install protobuf)
+- install protoc-gen-go-grpc (eq:brew install protoc-gen-go)

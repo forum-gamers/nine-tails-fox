@@ -21,6 +21,7 @@ import (
 	"github.com/forum-gamers/nine-tails-fox/pkg/preference"
 	"github.com/forum-gamers/nine-tails-fox/pkg/reply"
 	"github.com/forum-gamers/nine-tails-fox/pkg/share"
+	"github.com/forum-gamers/nine-tails-fox/utils"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
@@ -39,10 +40,12 @@ func main() {
 		log.Fatalf("Failed to listen : %s", err.Error())
 	}
 
+	query := utils.NewQueryUtils()
+
 	//repository
-	postRepo := post.NewPostRepo()
-	likeRepo := like.NewLikeRepo()
-	commentRepo := comment.NewCommentRepo()
+	postRepo := post.NewPostRepo(query)
+	likeRepo := like.NewLikeRepo(query)
+	commentRepo := comment.NewCommentRepo(query)
 	shareRepo := share.NewShareRepo()
 	userPreferenceRepo := preference.NewPreferenceRepo()
 	bookmarkRepo := bookmark.NewBookMarkRepo()

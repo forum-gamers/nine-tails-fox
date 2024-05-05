@@ -4,7 +4,9 @@ import (
 	"context"
 	"sync"
 
+	"github.com/forum-gamers/nine-tails-fox/generated"
 	protobuf "github.com/forum-gamers/nine-tails-fox/generated/post"
+	"github.com/forum-gamers/nine-tails-fox/pkg/base"
 	"github.com/forum-gamers/nine-tails-fox/pkg/comment"
 	"github.com/forum-gamers/nine-tails-fox/pkg/like"
 	"github.com/forum-gamers/nine-tails-fox/pkg/post"
@@ -146,4 +148,120 @@ func (s *PostService) DeletePost(ctx context.Context, req *protobuf.PostIdPayloa
 	}
 
 	return &protobuf.Messages{Message: "success"}, nil
+}
+
+func (s *PostService) GetPublicContent(ctx context.Context, in *protobuf.GetPostParams) (*protobuf.PostRespWithMetadata, error) {
+	UUID := s.GetUser(ctx).Id
+
+	data, err := s.PostRepo.GetPublicContent(ctx, UUID, in)
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.PostRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParsePostRespToProto(data),
+	}, nil
+}
+
+func (s *PostService) GetUserPost(ctx context.Context, in *protobuf.Pagination) (*protobuf.PostRespWithMetadata, error) {
+	UUID := s.GetUser(ctx).Id
+
+	data, err := s.PostRepo.GetUserPost(ctx, UUID, in)
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.PostRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParsePostRespToProto(data),
+	}, nil
+}
+
+func (s *PostService) GetLikedPost(ctx context.Context, in *protobuf.Pagination) (*protobuf.PostRespWithMetadata, error) {
+	UUID := s.GetUser(ctx).Id
+
+	data, err := s.LikeRepo.FindUserLikedPost(ctx, UUID, base.Pagination{
+		Page: uint32(in.Page), Limit: uint32(in.Limit),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.PostRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParsePostRespToProto(data),
+	}, nil
+}
+
+func (s *PostService) GetUserMedia(ctx context.Context, in *protobuf.Pagination) (*protobuf.PostRespWithMetadata, error) {
+	UUID := s.GetUser(ctx).Id
+
+	data, err := s.PostRepo.GetUserPostMedia(ctx, UUID, in)
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.PostRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParsePostRespToProto(data),
+	}, nil
+}
+
+func (s *PostService) GetUserPostById(ctx context.Context, in *protobuf.PaginationWithUserId) (*protobuf.PostRespWithMetadata, error) {
+	data, err := s.PostRepo.GetUserPost(ctx, in.UserId, &protobuf.Pagination{Page: in.Page, Limit: in.Limit})
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.PostRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParsePostRespToProto(data),
+	}, nil
+}
+
+func (s *PostService) GetMediaByUserId(ctx context.Context, in *protobuf.PaginationWithUserId) (*protobuf.PostRespWithMetadata, error) {
+	data, err := s.PostRepo.GetUserPostMedia(ctx, in.UserId, &protobuf.Pagination{Page: in.Page, Limit: in.Limit})
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.PostRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParsePostRespToProto(data),
+	}, nil
+}
+
+func (s *PostService) GetUserLikedPost(ctx context.Context, in *protobuf.PaginationWithUserId) (*protobuf.PostRespWithMetadata, error) {
+	data, err := s.LikeRepo.FindUserLikedPost(ctx, in.UserId, base.Pagination{Page: uint32(in.Page), Limit: uint32(in.Limit)})
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.PostRespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      in.Page,
+		Limit:     in.Limit,
+		Data:      generated.ParsePostRespToProto(data),
+	}, nil
+}
+
+func (s *PostService) GetTopTags(ctx context.Context, in *protobuf.Pagination) (*protobuf.TopTagResp, error) {
+	data, err := s.PostRepo.GetTopTags(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return &protobuf.TopTagResp{Datas: generated.ParseTagsRespToProto(data)}, nil
 }

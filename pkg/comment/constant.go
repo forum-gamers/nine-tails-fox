@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/forum-gamers/nine-tails-fox/pkg/base"
+	"github.com/forum-gamers/nine-tails-fox/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -18,9 +19,13 @@ type CommentRepo interface {
 	FindReplyById(ctx context.Context, id, replyId primitive.ObjectID, data *ReplyComment) error
 	DeleteOneReply(ctx context.Context, id, replyId primitive.ObjectID) error
 	DeleteMany(ctx context.Context, postId primitive.ObjectID) error
+	FindPostComment(ctx context.Context, postId primitive.ObjectID, query struct{ Page, Limit int }) ([]CommentResponse, error)
 }
 
-type CommentRepoImpl struct{ base.BaseRepo }
+type CommentRepoImpl struct {
+	base.BaseRepo
+	utils.QueryUtils
+}
 
 type CommentService interface {
 	CreatePayload(text string, postId primitive.ObjectID, userId string) Comment

@@ -28,6 +28,14 @@ message PostIdPayload {
 service PostService {
   rpc CreatePost(PostForm) returns (Post) {}
   rpc DeletePost(PostIdPayload) returns (Messages) {}
+  rpc GetPublicContent(GetPostParams) returns (PostRespWithMetadata) {}
+  rpc GetUserPost(Pagination) returns (PostRespWithMetadata) {}
+  rpc GetLikedPost(Pagination) returns (PostRespWithMetadata) {}
+  rpc GetUserMedia(Pagination) returns (PostRespWithMetadata) {}
+  rpc GetUserPostById(PaginationWithUserId) returns (PostRespWithMetadata) {}
+  rpc GetMediaByUserId(PaginationWithUserId) returns (PostRespWithMetadata) {}
+  rpc GetUserLikedPost(PaginationWithUserId) returns (PostRespWithMetadata) {}
+  rpc GetTopTags(Pagination) returns (TopTagResp) {}
 }
 
 message Media {
@@ -46,4 +54,57 @@ message Post {
   string updatedAt = 7;
   repeated string tags = 8;
   string privacy = 9;
+}
+
+message Pagination {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message PaginationWithUserId {
+  int32 page = 1;
+  int32 limit = 2;
+  string userId = 3;
+}
+
+message PostRespWithMetadata {
+  int64 totalData = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  int32 totalPage = 4;
+  repeated PostResponse data = 5;
+}
+
+message GetPostParams {
+  int32 page = 1;
+  int32 limit = 2;
+  repeated string tags = 3;
+  repeated string userIds = 4;
+}
+
+message PostResponse {
+  string _id = 1;
+  string userId = 2;
+  string text = 3;
+  repeated Media media = 4;
+  bool allowComment = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  int64 countLike = 8;
+  int64 countShare = 9;
+  bool isLiked = 10;
+  bool isShared = 11;
+  repeated string tags = 12;
+  string privacy = 13;
+  int64 totalData = 14;
+}
+
+message TopTag {
+  string _id = 1;
+  int64 count = 2;
+  repeated string posts = 3;
+}
+
+message TopTagResp {
+  repeated TopTag datas = 1;
 }

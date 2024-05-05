@@ -83,3 +83,19 @@ func (r *BaseRepoImpl) FindByQuery(ctx context.Context, query any) (*mongo.Curso
 func (r *BaseRepoImpl) GetSession() (mongo.Session, error) {
 	return r.DB.Database().Client().StartSession()
 }
+
+func (b *BaseRepoImpl) BulkUpdate(ctx context.Context, updateModel []mongo.WriteModel) (*mongo.BulkWriteResult, error) {
+	return b.DB.BulkWrite(ctx, updateModel)
+}
+
+func (b *BaseRepoImpl) Aggregations(ctx context.Context, aggregation any) (*mongo.Cursor, error) {
+	return b.DB.Aggregate(ctx, aggregation)
+}
+
+func (b *BaseRepoImpl) UpdateMany(ctx context.Context, filter any, update any) (*mongo.UpdateResult, error) {
+	return b.DB.UpdateMany(ctx, filter, update)
+}
+
+func (b *BaseRepoImpl) DeleteMany(ctx context.Context, filter any) (*mongo.DeleteResult, error) {
+	return b.DB.DeleteMany(ctx, filter)
+}

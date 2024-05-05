@@ -23,3 +23,14 @@ type ReplyComment struct {
 	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
 	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt"`
 }
+
+type CommentResponse struct {
+	Id        primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
+	UserId    string             `json:"userId" bson:"userId,omitempty"`
+	Text      string             `json:"text" bson:"text,omitempty"`
+	PostId    primitive.ObjectID `json:"postId" bson:"postId,omitempty"`
+	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
+	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt"`
+	Reply     []ReplyComment     `json:"reply" bson:"reply"`
+	TotalData int                `json:"totalData" bson:"totalData"`
+}

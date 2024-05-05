@@ -38,4 +38,30 @@ message Messages {
 service CommentService {
   rpc CreateComment(CommentForm) returns (Comment) {}
   rpc DeleteComment(CommentIdPayload) returns (Messages) {}
+  rpc FindPostComment(PaginationWithPostId) returns (CommentRespWithMetadata) {}
+}
+
+message PaginationWithPostId {
+  int32 page = 1;
+  int32 limit = 2;
+  string postId = 3;
+}
+
+message CommentResp {
+  string _id = 1;
+  string userId = 2;
+  string text = 3;
+  string postId = 4;
+  string createdAt = 5;
+  string updatedAt = 6;
+  repeated Reply reply = 7;
+  int64 totalData = 8;
+}
+
+message CommentRespWithMetadata {
+  int64 totalData = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  int32 totalPage = 4;
+  repeated CommentResp data = 5;
 }

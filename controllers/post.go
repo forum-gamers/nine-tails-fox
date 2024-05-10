@@ -6,6 +6,7 @@ import (
 
 	"github.com/forum-gamers/nine-tails-fox/generated"
 	protobuf "github.com/forum-gamers/nine-tails-fox/generated/post"
+	h "github.com/forum-gamers/nine-tails-fox/helpers"
 	"github.com/forum-gamers/nine-tails-fox/pkg/base"
 	"github.com/forum-gamers/nine-tails-fox/pkg/comment"
 	"github.com/forum-gamers/nine-tails-fox/pkg/like"
@@ -45,6 +46,10 @@ func (s *PostService) CreatePost(ctx context.Context, req *protobuf.PostForm) (*
 		}
 	}
 
+	if !h.IsValidPrivacy(req.Privacy) {
+		return nil, status.Error(codes.InvalidArgument, "Privacy must be on of Public,Private,Friend Only")
+	}
+
 	userId := s.GetUser(ctx).Id
 	post := s.PostService.CreatePostPayload(userId, req.Text, req.Privacy, req.AllowComment, postMedias, tags)
 
@@ -73,7 +78,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *protobuf.PostForm) (*
 	}, nil
 }
 
-func (s *PostService) DeletePost(ctx context.Context, req *protobuf.PostIdPayload) (*protobuf.Messages, error) {
+func (s *PostService) DeletePost(ctx context.Context, req *protobuf.PostIdPayload) (*protobuf.ListIdsResp, error) {
 	if req.XId == "" {
 		return nil, status.Error(codes.InvalidArgument, "_id is required")
 	}
@@ -93,6 +98,12 @@ func (s *PostService) DeletePost(ctx context.Context, req *protobuf.PostIdPayloa
 		return nil, status.Error(codes.Unauthenticated, "Forbidden")
 	}
 
+	resp := []string{}
+	if len(data.Media) > 0 {
+		for _, media := range data.Media {
+			resp = append(resp, media.Id)
+		}
+	}
 	session, err := s.PostRepo.GetSession()
 	if err != nil {
 		return nil, status.Error(codes.Unavailable, "Failed get session")
@@ -147,7 +158,7 @@ func (s *PostService) DeletePost(ctx context.Context, req *protobuf.PostIdPayloa
 		return nil, err
 	}
 
-	return &protobuf.Messages{Message: "success"}, nil
+	return &protobuf.ListIdsResp{Datas: resp}, nil
 }
 
 func (s *PostService) GetPublicContent(ctx context.Context, in *protobuf.GetPostParams) (*protobuf.PostRespWithMetadata, error) {

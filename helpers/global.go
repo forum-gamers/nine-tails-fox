@@ -14,3 +14,12 @@ func PanicIfError(err error) {
 func NewAppError(code codes.Code, msg string) error {
 	return status.Error(code, msg)
 }
+
+func IsValidPrivacy(val string) bool {
+	for _, privacy := range []string{"Public", "Private", "Friend Only"} {
+		if privacy == val {
+			return true
+		}
+	}
+	return false
+}

@@ -27,7 +27,7 @@ message PostIdPayload {
 
 service PostService {
   rpc CreatePost(PostForm) returns (Post) {}
-  rpc DeletePost(PostIdPayload) returns (Messages) {}
+  rpc DeletePost(PostIdPayload) returns (ListIdsResp) {}
   rpc GetPublicContent(GetPostParams) returns (PostRespWithMetadata) {}
   rpc GetUserPost(Pagination) returns (PostRespWithMetadata) {}
   rpc GetLikedPost(Pagination) returns (PostRespWithMetadata) {}
@@ -107,4 +107,8 @@ message TopTag {
 
 message TopTagResp {
   repeated TopTag datas = 1;
+}
+
+message ListIdsResp {
+  repeated string datas = 1;
 }

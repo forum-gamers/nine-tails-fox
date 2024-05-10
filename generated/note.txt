@@ -7,4 +7,4 @@ protoc -I=${pwd}/proto --go_out=. ${pwd}/proto/*.proto --go-grpc_out=.
 
 note:
 - install proto compiler (eq: brew install protobuf)
-- install protoc-gen-go-grpc (eq:brew install protoc-gen-go)
+- install protoc-gen-go-grpc (eq:brew install protoc-gen-go-grpc)

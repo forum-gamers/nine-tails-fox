@@ -3,7 +3,9 @@ package controllers
 import (
 	"context"
 
+	"github.com/forum-gamers/nine-tails-fox/generated"
 	protobuf "github.com/forum-gamers/nine-tails-fox/generated/bookmark"
+	"github.com/forum-gamers/nine-tails-fox/pkg/base"
 	"github.com/forum-gamers/nine-tails-fox/pkg/bookmark"
 	"github.com/forum-gamers/nine-tails-fox/pkg/post"
 	"github.com/forum-gamers/nine-tails-fox/pkg/user"
@@ -80,4 +82,31 @@ func (s *BookmarkService) DeleteBookmark(ctx context.Context, req *protobuf.IdPa
 		return nil, err
 	}
 	return &protobuf.Messages{Message: "success"}, nil
+}
+
+func (s *BookmarkService) GetMyBookmarks(ctx context.Context, req *protobuf.PaginationWithPostId) (*protobuf.RespWithMetadata, error) {
+	if req.PostId == "" {
+		return nil, status.Error(codes.InvalidArgument, "postId is required")
+	}
+
+	postId, err := primitive.ObjectIDFromHex(req.PostId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid objectId")
+	}
+
+	id := s.GetUser(ctx).Id
+	data, err := s.BookmarkRepo.FindMyBookmarks(ctx, postId, id, base.Pagination{
+		Page:  uint32(req.Page),
+		Limit: uint32(req.Limit),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &protobuf.RespWithMetadata{
+		TotalData: int64(data[0].TotalData),
+		Page:      req.Page,
+		Limit:     req.Limit,
+		Data:      generated.ParseBookmarkPostRespToProto(data),
+	}, nil
 }

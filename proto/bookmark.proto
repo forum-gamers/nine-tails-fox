@@ -7,6 +7,7 @@ option go_package = "./generated/bookmark";
 service BookmarkService {
   rpc CreateBookmark(PostIdPayload) returns (Bookmark) {}
   rpc DeleteBookmark(IdPayload) returns (Messages) {}
+  rpc GetMyBookmarks(PaginationWithPostId) returns (RespWithMetadata) {}
 }
 
 message Bookmark {
@@ -27,4 +28,41 @@ message IdPayload {
 
 message Messages {
   string message = 1;
+}
+
+message PaginationWithPostId {
+  int32 page = 1;
+  int32 limit = 2;
+  string postId = 3;
+}
+
+message PostResponse {
+  string _id = 1;
+  string userId = 2;
+  string text = 3;
+  repeated Media media = 4;
+  bool allowComment = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  int64 countLike = 8;
+  int64 countShare = 9;
+  bool isLiked = 10;
+  bool isShared = 11;
+  repeated string tags = 12;
+  string privacy = 13;
+  int64 totalData = 14;
+}
+
+message RespWithMetadata {
+  int64 totalData = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  int32 totalPage = 4;
+  repeated PostResponse data = 5;
+}
+
+message Media {
+  string id = 1;
+  string type = 2;
+  string url = 3;
 }

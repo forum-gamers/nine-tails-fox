@@ -48,7 +48,7 @@ func main() {
 	commentRepo := comment.NewCommentRepo(query)
 	shareRepo := share.NewShareRepo()
 	userPreferenceRepo := preference.NewPreferenceRepo()
-	bookmarkRepo := bookmark.NewBookMarkRepo()
+	bookmarkRepo := bookmark.NewBookMarkRepo(query)
 
 	//services
 	postService := post.NewPostService(postRepo)

@@ -88,7 +88,7 @@ func (r *PostRepoImpl) GetPublicContent(ctx context.Context, userId string, quer
 							r.NewLimit(int(query.Limit)),
 							r.NewLookup("comment", "_id", "postId", "comment"),
 							r.NewLookup("like", "_id", "postId", "like"),
-							r.NewLookup("share", "_id", "posId", "share"),
+							r.NewLookup("share", "_id", "postId", "share"),
 							bson.D{
 								{Key: "$addFields",
 									Value: bson.D{

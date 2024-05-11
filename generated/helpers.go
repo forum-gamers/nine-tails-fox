@@ -1,6 +1,7 @@
 package generated
 
 import (
+	bookmarkProto "github.com/forum-gamers/nine-tails-fox/generated/bookmark"
 	commentProto "github.com/forum-gamers/nine-tails-fox/generated/comment"
 	postProto "github.com/forum-gamers/nine-tails-fox/generated/post"
 	"github.com/forum-gamers/nine-tails-fox/pkg/comment"
@@ -21,6 +22,39 @@ func ParsePostRespToProto(datas []post.PostResponse) (result []*postProto.PostRe
 			}
 		}
 		result = append(result, &postProto.PostResponse{
+			XId:          data.Id.Hex(),
+			UserId:       data.UserId,
+			Text:         data.Text,
+			Media:        medias,
+			AllowComment: data.AllowComment,
+			CreatedAt:    data.CreatedAt.String(),
+			UpdatedAt:    data.UpdatedAt.String(),
+			CountLike:    int64(data.CountLike),
+			CountShare:   int64(data.CountShare),
+			IsLiked:      data.IsLiked,
+			IsShared:     data.IsShared,
+			Tags:         data.Tags,
+			Privacy:      data.Privacy,
+			TotalData:    int64(data.TotalData),
+		})
+	}
+	return
+}
+
+func ParseBookmarkPostRespToProto(datas []post.PostResponse) (result []*bookmarkProto.PostResponse) {
+	for _, data := range datas {
+		medias := make([]*bookmarkProto.Media, 0)
+
+		if data.Media != nil || len(data.Media) > 0 {
+			for _, media := range data.Media {
+				medias = append(medias, &bookmarkProto.Media{
+					Url:  media.Url,
+					Type: media.Type,
+					Id:   media.Id,
+				})
+			}
+		}
+		result = append(result, &bookmarkProto.PostResponse{
 			XId:          data.Id.Hex(),
 			UserId:       data.UserId,
 			Text:         data.Text,

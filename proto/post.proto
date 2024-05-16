@@ -36,6 +36,7 @@ service PostService {
   rpc GetMediaByUserId(PaginationWithUserId) returns (PostRespWithMetadata) {}
   rpc GetUserLikedPost(PaginationWithUserId) returns (PostRespWithMetadata) {}
   rpc GetTopTags(Pagination) returns (TopTagResp) {}
+  rpc FindById(PostIdPayload) returns (PostResponse) {}
 }
 
 message Media {
@@ -97,6 +98,7 @@ message PostResponse {
   repeated string tags = 12;
   string privacy = 13;
   int64 totalData = 14;
+  int64 countComment = 15;
 }
 
 message TopTag {

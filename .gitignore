@@ -2,6 +2,6 @@
 
 main.exe
 
-.main
+main
 
 generated/**/*.pb.go

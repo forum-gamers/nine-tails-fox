@@ -150,6 +150,60 @@ func (r *PostRepoImpl) GetPublicContent(ctx context.Context, userId string, quer
 	return datas, nil
 }
 
+func (r *PostRepoImpl) FindPostResponseById(ctx context.Context, id primitive.ObjectID, userId string) (result PostResponse, err error) {
+	cursor, err := r.Aggregations(ctx, bson.A{
+		bson.D{{Key: "$match", Value: bson.D{{Key: "_id", Value: id}}}},
+		r.NewLookup("comment", "_id", "postId", "comment"),
+		r.NewLookup("like", "_id", "postId", "like"),
+		r.NewLookup("share", "_id", "posId", "share"),
+		bson.D{
+			{Key: "$addFields",
+				Value: bson.D{
+					{Key: "countLike", Value: bson.D{{Key: "$size", Value: "$like"}}},
+					{Key: "countShare", Value: bson.D{{Key: "$size", Value: "$share"}}},
+					r.NewCountComment("countComment", "$comment"),
+					r.IsDo("isLiked", "$like", userId),
+					r.IsDo("isShared", "$share", userId),
+				},
+			},
+		},
+		bson.D{
+			{Key: "$project", Value: bson.D{
+				{Key: "_id", Value: "_id"},
+				{Key: "userId", Value: "userId"},
+				{Key: "text", Value: "text"},
+				{Key: "media", Value: "media"},
+				{Key: "allowComment", Value: "allowComment"},
+				{Key: "createdAt", Value: "createdAt"},
+				{Key: "updatedAt", Value: "updatedAt"},
+				{Key: "countLike", Value: "countLike"},
+				{Key: "countComment", Value: "countComment"},
+				{Key: "countShare", Value: "countShare"},
+				{Key: "isLiked", Value: "isLiked"},
+				{Key: "isShared", Value: "isShared"},
+				{Key: "tags", Value: "tags"},
+				{Key: "privacy", Value: "privacy"},
+			}},
+		},
+	})
+	if err != nil {
+		return
+	}
+	defer cursor.Close(ctx)
+
+	if cursor.Next(ctx) {
+		if err = cursor.Decode(&result); err != nil {
+			return
+		}
+	}
+
+	if result.Id == primitive.NilObjectID {
+		err = h.NewAppError(codes.NotFound, "data not found")
+		return
+	}
+	return
+}
+
 func (r *PostRepoImpl) GetUserPost(ctx context.Context, userId string, query *protobuf.Pagination) ([]PostResponse, error) {
 	curr, err := r.Aggregations(ctx, bson.A{
 		bson.D{{Key: "$match", Value: bson.D{{Key: "userId", Value: userId}}}},

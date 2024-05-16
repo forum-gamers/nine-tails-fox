@@ -51,6 +51,7 @@ message PostResponse {
   repeated string tags = 12;
   string privacy = 13;
   int64 totalData = 14;
+  int64 countComment = 15;
 }
 
 message RespWithMetadata {

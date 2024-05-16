@@ -20,6 +20,7 @@ type PostRepo interface {
 	GetUserPost(ctx context.Context, userId string, query *protobuf.Pagination) ([]PostResponse, error)
 	GetUserPostMedia(ctx context.Context, userId string, query *protobuf.Pagination) ([]PostResponse, error)
 	GetTopTags(ctx context.Context, query *protobuf.Pagination) ([]TopTags, error)
+	FindPostResponseById(ctx context.Context, id primitive.ObjectID, userId string) (PostResponse, error)
 }
 
 type PostRepoImpl struct {

@@ -36,6 +36,7 @@ func ParsePostRespToProto(datas []post.PostResponse) (result []*postProto.PostRe
 			Tags:         data.Tags,
 			Privacy:      data.Privacy,
 			TotalData:    int64(data.TotalData),
+			CountComment: int64(data.CountComment),
 		})
 	}
 	return
@@ -69,6 +70,7 @@ func ParseBookmarkPostRespToProto(datas []post.PostResponse) (result []*bookmark
 			Tags:         data.Tags,
 			Privacy:      data.Privacy,
 			TotalData:    int64(data.TotalData),
+			CountComment: int64(data.CountComment),
 		})
 	}
 	return

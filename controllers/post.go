@@ -276,3 +276,44 @@ func (s *PostService) GetTopTags(ctx context.Context, in *protobuf.Pagination) (
 	}
 	return &protobuf.TopTagResp{Datas: generated.ParseTagsRespToProto(data)}, nil
 }
+
+func (s *PostService) FindById(ctx context.Context, in *protobuf.PostIdPayload) (*protobuf.PostResponse, error) {
+	if in.XId == "" {
+		return nil, status.Error(codes.InvalidArgument, "_id is required")
+	}
+
+	postId, err := primitive.ObjectIDFromHex(in.XId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid objectId")
+	}
+
+	data, err := s.PostRepo.FindPostResponseById(ctx, postId, s.GetUser(ctx).Id)
+	if err != nil {
+		return nil, err
+	}
+
+	var medias []*protobuf.Media
+	for _, media := range data.Media {
+		medias = append(medias, &protobuf.Media{
+			Url:  media.Url,
+			Id:   media.Id,
+			Type: media.Type,
+		})
+	}
+	return &protobuf.PostResponse{
+		XId:          data.Id.Hex(),
+		UserId:       data.UserId,
+		Text:         data.Text,
+		Media:        medias,
+		AllowComment: data.AllowComment,
+		CreatedAt:    data.CreatedAt.String(),
+		UpdatedAt:    data.UpdatedAt.String(),
+		CountLike:    int64(data.CountLike),
+		CountShare:   int64(data.CountShare),
+		CountComment: int64(data.CountComment),
+		IsLiked:      data.IsLiked,
+		IsShared:     data.IsShared,
+		Tags:         data.Tags,
+		TotalData:    int64(data.TotalData),
+	}, nil
+}
